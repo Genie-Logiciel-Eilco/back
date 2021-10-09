@@ -55,4 +55,4 @@ Edit your Controller in `app/Http/Controllers/ModelNameController.php`.
 
 Call your controller using Laravel's router in `routes/api.php`.
 
-All API routes (in `routes/api.php`) have the _/api_ URI prefix automatically applied.
+All API routes (in `routes/api.php`) have the _/api_/URI prefix automatically applied.

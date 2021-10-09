@@ -3,13 +3,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
 use App\Models\Role;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-
+use IlluminateSupportFacadesHash;
+use IlluminateSupportFacadesPassword;
+use IlluminateHttpRequest;
+use IlluminateSupportFacadesValidator;
 
 class AuthController extends Controller
 {
@@ -24,7 +30,7 @@ class AuthController extends Controller
             'email'=>$fields['email'],
             'password'=>bcrypt($fields['password']),
             'role_id'=>$fields['role_id']
-        ]);
+        ])->sendEmailVerificationNotification();
         return $this->sendResponse([],"Account created successfully");
     }
 
@@ -35,15 +41,18 @@ class AuthController extends Controller
     }
     public function login(LoginRequest $request)
     {
-        $fields = $request->validated();
-        
+        $fields = $request->validated();  
         $user = User::where(DB::raw('LOWER(`username`)'), strtolower(trim($fields['usernameOrEmail'])))->first();
         if(!$user)
         {
             $user = User::where(DB::raw('LOWER(`email`)'), strtolower(trim($fields['usernameOrEmail'])))->first();
-            if (!$user || !Hash::check($fields['password'], $user->password)) {
-                return $this->sendError('Bad credentials', 401);
+            if (!$user ) {
+                return $this->sendError('User not found', 401);
             }
+        }
+        if(!Hash::check($fields['password'], $user->password))
+        {
+            return $this->sendError('Bad credentials', 401);
         }
         $token = $user->createToken('myapptoken')->plainTextToken;
         $role=Role::find($user->role_id);
@@ -56,6 +65,39 @@ class AuthController extends Controller
         ];
         return $this->sendResponse($response, "");
     }
-
-
+    public function forgotPassword(ForgotPasswordRequest $request)
+    {
+        $request->validated();
+        $response = Password::sendResetLink(
+			$request->only('email')
+		);
+        switch ($response) {
+            case Password::RESET_LINK_SENT:
+                return $this->sendResponse([],__($response));
+            case Password::INVALID_USER:
+                return $this->sendError(__($response));
+            default:
+                return $this->sendError(__($response));
+        }
+    }
+    public function resetPassword(ResetPasswordRequest $request){
+        $fields=$request->validated();
+        $input = $request->only('email','token', 'password', 'password_confirmation');
+        $user=User::where('email',$fields['email'])->firstOrFail();
+        $response = Password::reset($input, function ($user, $password) {
+            $user->password = Hash::make($password);
+            $user->save();
+            
+        });
+        if($response == Password::PASSWORD_RESET)
+        {
+            return $this->sendResponse([],'Password reset successfully');
+        }
+        if($response==Password::INVALID_TOKEN)
+        {
+            return $this->sendError("Invalid token");
+        }
+        return $this->sendError($response);
+    }
+     
 }

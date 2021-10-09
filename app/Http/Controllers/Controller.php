@@ -52,7 +52,7 @@ class Controller extends BaseController
 
     public function permissionDenied()
     {
-        return $this->sendError('permission.denied', 403);
+        return $this->sendError('Permission denied', 403);
     }
 
     // Private helpers

@@ -2,6 +2,7 @@
 
 return [
 
+    'url_front'=>env('APP_FRONT_URL','Testi'),
     /*
     |--------------------------------------------------------------------------
     | Application Name
