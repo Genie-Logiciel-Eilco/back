@@ -21,7 +21,7 @@ Route::get('email/verify/{id}', [VerificationController::class,"verify"])->name(
 Route::get('email/resend', [VerificationController::class,"resend"])->name('verification.resend');
 Route::prefix("/user")->group(function(){
     
-    Route::post("/forgotPassword",[AuthController::class,"forgotPassword"])->name('password.reset');
+    Route::post("/forgotPassword",[AuthController::class,"forgotPassword"]);
     Route::post("/resetPassword",[AuthController::class,"resetPassword"]);
     
 });
