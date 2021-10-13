@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -27,12 +28,14 @@ class VerificationController extends Controller
         return redirect()->away(Config::get("app.url_front"));
     }
     
-    public function resend() {
-        if ($this->getAuthenticatedUser()->hasVerifiedEmail()) {
+    public function resend(ResetPasswordRequest $request) {
+        $fields=$request->validated();
+        $user=User::where('email',$fields['email'])->firstOrFail();
+        if ($user->hasVerifiedEmail()) {
             return $this->sendError("Email already verified.", 400);
         }
     
-        $this->getAuthenticatedUser()->sendEmailVerificationNotification();
+        $user->sendEmailVerificationNotification();
     
         return $this->sendResponse([],"Email verification link sent on your email id");
     }
