@@ -24,6 +24,14 @@ class UserSeeder extends Seeder
             'password'=>bcrypt("SE300799"),
             'role_id'=>1
         ]);
+        $user2=User::create([
+            'first_name'=>"Aymane",
+            'last_name'=>"El Mouhtarim",
+            'username'=>"ceh",
+            'email'=>"aymane.elmouhtarim@gmail.com",
+            'password'=>bcrypt("SE300799"),
+            'role_id'=>2
+        ]);
     }
         
 }
