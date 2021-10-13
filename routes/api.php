@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::post("/login", [AuthController::class, "login"]);
 Route::post("/register",[AuthController::class,"register"]);
 Route::get('email/verify/{id}', [VerificationController::class,"verify"])->name('verification.verify'); // Make sure to keep this as your route name
-Route::get('email/resend', [VerificationController::class,"resend"])->name('verification.resend');
+Route::post('email/resend', [VerificationController::class,"resend"])->name('verification.resend');
 Route::prefix("/user")->group(function(){
     Route::post("/forgotPassword",[AuthController::class,"forgotPassword"]);
     Route::post("/resetPassword",[AuthController::class,"resetPassword"]);    
