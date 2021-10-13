@@ -9,6 +9,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
 use App\Models\Role;
+use App\Notifications\APIPasswordResetNotification;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -67,18 +68,11 @@ class AuthController extends Controller
     }
     public function forgotPassword(ForgotPasswordRequest $request)
     {
-        $request->validated();
-        $response = Password::sendResetLink(
-			$request->only('email')
-		);
-        switch ($response) {
-            case Password::RESET_LINK_SENT:
-                return $this->sendResponse([],__($response));
-            case Password::INVALID_USER:
-                return $this->sendError(__($response));
-            default:
-                return $this->sendError(__($response));
-        }
+        $fields=$request->validated();
+        $user=User::where('email',$fields['email'])->firstOrFail();
+        $token=Password::createToken($user);
+        $user->notify(new APIPasswordResetNotification($token));
+        return $this->sendResponse($token,"done");
     }
     public function resetPassword(ResetPasswordRequest $request){
         $fields=$request->validated();
