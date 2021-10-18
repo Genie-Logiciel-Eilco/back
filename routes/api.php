@@ -26,6 +26,12 @@ Route::prefix("/user")->group(function(){
 Route::group(["middleware" => ["auth:sanctum"]], function () {
     // Authentication routes protected
     Route::get("/logout", [AuthController::class, "logout"]);
+    Route::post("/book/uploadImage/{uuid?}",[BookController::class,"uploadImage"]);
+    Route::post("/book/uploadFile/{uuid?}",[BookController::class,"uploadFile"]);
+    Route::post("/book/add/{uuid}",[BookController::class,"addBook"]);
+    Route::get("/book/{uuid}",[BookController::class,"show"]);
+    Route::get("/books/{rowsPerPage?}",[BookController::class,"paginate"]);
+    Route::delete('/book/{uuid}',[BookController::class,"delete"]);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

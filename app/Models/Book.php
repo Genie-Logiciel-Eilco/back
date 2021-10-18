@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
-    use HasFactory;
+    use HasFactory,Uuids;
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +23,8 @@ class Book extends Model
         'fileLocation',
         'imageLocation',
         'publicationDate',
-        'counter'
+        'counter',
+        'isReady'
     ];
 
 }

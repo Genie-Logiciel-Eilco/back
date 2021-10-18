@@ -16,14 +16,15 @@ class BookSeeder extends Seeder
      */
     public function run()
     {
-        $book=Book::create([
+        
+            Book::create([
             'isbn'=>"B329832",
             'name'=>"buya",
             'subject'=>"Comedie",
             'synopsis'=>"Bruh what the hell man",
-            'fileLocation'=>"\/buya\/xd.txt",
-            'imageLocation'=>"\/buya\/xd.jpg",
-            'publicationDate'=> date("F j, Y, g:i a"),
+            'fileLocation'=>"/buya/xd.txt",
+            'imageLocation'=>"/buya/xd.jpg",
+            'publicationDate'=>date('Y-m-d ', strtotime("2020-11-05 ")),
             'counter'=>3
         ]);
     }
