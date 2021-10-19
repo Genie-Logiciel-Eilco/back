@@ -6,7 +6,7 @@
 ### Requirements :
 ```
 Mysql 8.x
-Php 7.4 or higher
+Php 7.4 
 Composer
 Docker (maybe in prod only not sure yet)
 ```

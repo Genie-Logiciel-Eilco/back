@@ -4,7 +4,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddBookRequest;
-use App\Http\Requests\UploadImageRequest;
 use App\Models\Book;
 use Illuminate\Http\Request;
 
