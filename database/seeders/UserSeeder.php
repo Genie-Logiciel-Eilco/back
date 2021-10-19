@@ -21,6 +21,7 @@ class UserSeeder extends Seeder
             'last_name'=>"Saad",
             'username'=>"bobhhy",
             'email'=>"saaderraz99@gmail.com",
+            'email_verified_at'=>"2021-10-19T12:33:36.000000Z",
             'password'=>bcrypt("SE300799"),
             'role_id'=>1
         ]);
@@ -29,6 +30,7 @@ class UserSeeder extends Seeder
             'last_name'=>"El Mouhtarim",
             'username'=>"ceh",
             'email'=>"aymane.elmouhtarim@gmail.com",
+            'email_verified_at'=>"2021-10-19T12:33:36.000000Z",
             'password'=>bcrypt("SE300799"),
             'role_id'=>2
         ]);
