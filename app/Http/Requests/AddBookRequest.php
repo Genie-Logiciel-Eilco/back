@@ -18,7 +18,9 @@ class AddBookRequest extends FormRequest
             'isbn'=>'required',
             'name'=>'required',
             'subject'=>'required',
-            'synopsis'=>'required'
+            'synopsis'=>'required',
+            "authors"=>"required|array",
+            "authors.*"=>"int|distinct"
         ];
     }
 

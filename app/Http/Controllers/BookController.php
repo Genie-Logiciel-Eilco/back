@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddBookRequest;
+use App\Models\Author;
 use App\Models\Book;
 use Illuminate\Http\Request;
 
@@ -21,12 +22,12 @@ class BookController extends Controller
                 {
                     $book=Book::create();
                     Book::where("id",$book->id)->update(["imageLocation"=>$book->id.".".$extension]);
-                    $file->move(storage_path("images"),$book->id);
+                    $file->move(public_path("images"),$book->id);
                     return $this->sendResponse(["id"=>$book->id],"Image uploaded successfully");
                 }
                 elseif(Book::where("id",$uuid)->first())
                 {
-                    $file->move(storage_path("images"),$uuid.".".$extension);
+                    $file->move(public_path("images"),$uuid.".".$extension);
                     Book::where("id",$uuid)->update(["imageLocation"=>$uuid.".".$extension]);
                     return $this->sendResponse(["id"=>$uuid],"Image uploaded successfully");
                 }
@@ -59,12 +60,12 @@ class BookController extends Controller
                 {
                     $book=Book::create();
                     Book::where("id",$book->id)->update(["fileLocation"=>$book->id.".".$extension]);
-                    $file->move(storage_path("files"),$book->id);
+                    $file->move(public_path("files"),$book->id);
                     return $this->sendResponse(["id"=>$book->id],"File uploaded successfully");
                 }
                 elseif(Book::where("id",$uuid)->first())
                 {
-                    $file->move(storage_path("files"),$uuid.".".$extension);
+                    $file->move(public_path("files"),$uuid.".".$extension);
                     Book::where("id",$uuid)->update(["fileLocation"=>$uuid.".".$extension]);
                     return $this->sendResponse(["id"=>$uuid],"File uploaded successfully");
                 }
@@ -86,13 +87,25 @@ class BookController extends Controller
     public function addBook($uuid,AddBookRequest $request)
     {
         $fields=$request->validated();
+        $authors=$fields['authors'];
+        unset($fields['authors']);
         $book=Book::where('id',$uuid);
         if(Book::where('isbn',$fields['isbn'])->first() && $book->first()->isbn !=$fields['isbn'] )
         {
             return $this->sendError("Isbn already taken");
         }
+        
         $book->update($fields);
         $book->update(['isReady'=>1]);
+        foreach($authors as $author)
+        {
+            if(!Author::where('id',$author)->exists())
+            {
+                return $this->sendError("Author with id {$author} doesn't exist");
+            }
+        }
+        $book->first()->authors()->sync($authors);
+        
         return $this->sendResponse(['id'=>$uuid],"Updated successfully");
     }
     public function show($uuid)
@@ -110,6 +123,10 @@ class BookController extends Controller
     public function paginate($rowsPerPage=10)
     {
         return $this->sendResponse(Book::where('isReady',1)->paginate($rowsPerPage),"Success");
+    }
+    public function getAll()
+    {
+        return $this->sendResponse(Book::where('isReady',1)->get(),"Success");
     }
     public function delete($uuid)
     {

@@ -21,7 +21,7 @@ class AuthorSeeder extends Seeder
             'biography'=>"Victor Hugo is a French poet, playwright, writer, novelist and romantic designer, born February 26, 1802 in Besançon and died May 22, 1885 in Paris. He is considered to be one of the most important writers of the French language.",
             'birthDate'=>"1802-02-26",
             'deathDate'=>"1885-05-02",
-            'birthplace'=>"Besançon",
+            'birthplace'=>"Besançon,France",
         ]);
           
     }

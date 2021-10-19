@@ -31,11 +31,13 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::post("/book/uploadFile/{uuid?}",[BookController::class,"uploadFile"]);
     Route::post("/book/add/{uuid}",[BookController::class,"addBook"]);
     Route::get("/book/{uuid}",[BookController::class,"show"]);
-    Route::get("/books/{rowsPerPage?}",[BookController::class,"paginate"]);
+    Route::get("/books/paginate/{rowsPerPage?}",[BookController::class,"paginate"]);
+    Route::get("/books",[BookController::class,"getAll"]);
     Route::delete('/book/{uuid}',[BookController::class,"delete"]);
     // Author Controller
     Route::get("/author/{id}",[AuthorController::class,"getById"]);
     Route::get("/authors",[AuthorController::class,"getAll"]);
+    Route::get("/authors/paginate/{rowsPerPage?}",[AuthorController::class,"paginate"]);
     Route::post("/author/add",[AuthorController::class,"add"]);
     Route::post("/author/update/{id}",[AuthorController::class,"update"]);
     Route::delete("/author/{id}",[AuthorController::class,"delete"]);

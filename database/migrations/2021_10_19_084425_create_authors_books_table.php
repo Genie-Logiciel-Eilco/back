@@ -19,10 +19,10 @@ class CreateAuthorsBooksTable extends Migration
             $table->foreign('book_id')
               ->references('id')
               ->on('books')->onDelete('cascade');
-            $table->string('author_id');
+            $table->unsignedBigInteger('author_id');
             $table->foreign('author_id')
               ->references('id')
-              ->on('books')->onDelete('cascade');
+              ->on('authors')->onDelete('cascade');
         });
     }
 

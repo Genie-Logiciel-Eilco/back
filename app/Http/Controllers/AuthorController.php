@@ -11,12 +11,16 @@ class AuthorController extends Controller
 {
     public function getById($id)
     {
-        $author=Author::findOrFails($id);
+        $author=Author::findOrFail($id);
         return $this->sendResponse($author);
     }
     public function getAll()
     {
         return $this->sendResponse(Author::all());
+    }
+    public function paginate($rowsPerPage=10)
+    {
+        return $this->sendResponse(Author::paginate($rowsPerPage),"Success");
     }
     public function add(AddAuthorRequest $request)
     {
@@ -32,9 +36,10 @@ class AuthorController extends Controller
     }
     public function delete($id)
     {
-        $author=Author::deleteById($id);
+        $author=Author::find($id);
         if($author)
         {
+            $author->delete();
             return $this->sendResponse([],"Deleted successfully");
         }
         else

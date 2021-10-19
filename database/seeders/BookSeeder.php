@@ -6,7 +6,6 @@ use App\Models\Book;
 
 use Illuminate\Database\Seeder;
 
-
 class BookSeeder extends Seeder
 {
     /**
@@ -25,7 +24,8 @@ class BookSeeder extends Seeder
             'fileLocation'=>"/buya/xd.txt",
             'imageLocation'=>"/buya/xd.jpg",
             'publicationDate'=>date('Y-m-d ', strtotime("2020-11-05 ")),
-            'counter'=>3
+            'counter'=>3,
+            'isReady'=>1
         ]);
     }
 }

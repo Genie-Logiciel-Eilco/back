@@ -16,7 +16,7 @@ class AddAuthorRequest extends FormRequest
         return [
             'first_name'=>'required|string',
             'last_name'=>'required|string',
-            'biography'=>"required|text",
+            'biography'=>"required",
             'birthDate'=>"required|date",
             'deathDate'=>"date",
             'birthplace'=>"required|string",
