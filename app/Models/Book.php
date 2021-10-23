@@ -24,7 +24,8 @@ class Book extends Model
         'imageLocation',
         'publicationDate',
         'counter',
-        'isReady'
+        'isReady',
+        'publisher_id'
     ];
     public function authors()
     {
@@ -34,6 +35,9 @@ class Book extends Model
         'authors_books',
         'book_id',
         'author_id');
+    }
+    public function publisher(){
+        return $this->belongsTo(Publisher::class);
     }
 
 }

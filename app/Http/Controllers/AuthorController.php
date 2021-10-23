@@ -26,13 +26,22 @@ class AuthorController extends Controller
     {
         $fields=$request->validated();
         $author=Author::create($fields);
-        return $this->sendResponse([$author],"Author added Successfully");
+        return $this->sendResponse($author,"Author added Successfully");
     }
     public function update($id,UpdateAuthorRequest $request)
     {
         $fields=$request->validated();
-        $author=Author::where('id',$id)->update($fields);
-        return $this->sendResponse([$author],"Author updated Successfully");
+        $author=Author::find($id);
+        if($author)
+        {
+            $author->update($fields);
+            return $this->sendResponse($author,"Author updated Successfully");
+        }
+        else
+        {
+            return $this->sendError("Author with id {$id} was not found");
+        }
+        
     }
     public function delete($id)
     {

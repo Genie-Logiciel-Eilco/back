@@ -25,7 +25,8 @@ class BookSeeder extends Seeder
             'imageLocation'=>"/buya/xd.jpg",
             'publicationDate'=>date('Y-m-d ', strtotime("2020-11-05 ")),
             'counter'=>3,
-            'isReady'=>1
+            'isReady'=>1,
+            'publisher_id'=>1
         ]);
     }
 }

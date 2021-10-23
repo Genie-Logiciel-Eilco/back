@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Publisher;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,8 +18,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
+            PublisherSeeder::class,
+            AuthorSeeder::class,
             BookSeeder::class,
-            AuthorSeeder::class
+            
         ]);
     }
 }

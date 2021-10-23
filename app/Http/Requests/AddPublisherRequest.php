@@ -4,9 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddBookRequest extends FormRequest
+class AddPublisherRequest extends FormRequest
 {
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -15,13 +14,9 @@ class AddBookRequest extends FormRequest
     public function rules()
     {
         return [
-            'isbn'=>'required',
-            'name'=>'required',
-            'subject'=>'required',
-            'synopsis'=>'required',
-            "authors"=>"required|array",
-            "authors.*"=>"int|distinct",
-            "publisher_id"=>"int"
+            'name'=>'required|string',
+            'description'=>'required',
+            'foundationDate'=>"date",
         ];
     }
 

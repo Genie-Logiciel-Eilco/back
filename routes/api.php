@@ -41,6 +41,13 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::post("/author/add",[AuthorController::class,"add"]);
     Route::post("/author/update/{id}",[AuthorController::class,"update"]);
     Route::delete("/author/{id}",[AuthorController::class,"delete"]);
+    // Publisher Controller
+    Route::get("/publisher/{id}",[PublisherController::class,"getById"]);
+    Route::get("/publishers",[PublisherController::class,"getAll"]);
+    Route::get("/publishers/paginate/{rowsPerPage?}",[PublisherController::class,"paginate"]);
+    Route::post("/publisher/add",[PublisherController::class,"add"]);
+    Route::post("/publisher/update/{id}",[PublisherController::class,"update"]);
+    Route::delete("/publisher/{id}",[PublisherController::class,"delete"]);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
