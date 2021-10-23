@@ -101,4 +101,16 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-la
 ```sudo ufw app list```
 
 ...see tutorial
+### File too large : Look for this link and search for ngix:
+```https://stackoverflow.com/questions/28529518/small-file-get-uploaded-but-not-large-file-in-laravel/28581314```
+### Unable to write in the Directory
+```
+ useradd -U -G www-data -m -c "deploy" deploybot
+ chown deploybot:www-data /var/www/back
+ chmod 2755 /var/www/back
+ sudo usermod -aG www-data deploybot
+ sudo chown -R www-data:www-data /var/www/back
+ sudo chown -R www-data:www-data /var/www/back/public
+ sudo chmod -R 775 /var/www
+```
 
