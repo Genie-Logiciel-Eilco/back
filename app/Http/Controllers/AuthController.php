@@ -61,8 +61,7 @@ class AuthController extends Controller
         $response = [
             'user' => $user,
             'role'=>$role->role_name,
-            'token' => $token,
-            'first_time' => $user->code_pin == null,
+            'token' => $token
         ];
         return $this->sendResponse($response, "");
     }
@@ -93,5 +92,8 @@ class AuthController extends Controller
         }
         return $this->sendError($response);
     }
-     
+    public function users($rowsPerPage)
+    {
+        return $this->sendResponse(User::paginate($rowsPerPage));
+    }
 }
