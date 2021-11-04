@@ -113,4 +113,30 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-la
  sudo chown -R www-data:www-data /var/www/back/public
  sudo chmod -R 775 /var/www
 ```
+# Prod bbd instance in aws
+## Convert .ppk to .pem to use ssh command
+```
+sudo apt-get install putty-tools 
+puttygen server1.ppk -O private-openssh -o server1.pem 
+chmod 400 server1.pem 
+ssh -i server1.pem user@ip_address
+```
 
+## Add user to machine as sudoer
+```
+adduser bobbhy
+usermod -aG sudo bobbhy
+```
+## Copy ssh key from admin to the new user
+```
+sudo apt-get install rsync grsync
+rsync --archive --chown=bobbhy:bobbhy ~/.ssh /home/bobbhy
+```
+## Install db 
+``` 
+sudo apt-get install default-mysql-server
+sudo mysql_secure_installation
+CREATE DATABASE lazy_lib;
+CREATE USER 'lazy_manager'@'localhost' IDENTIFIED BY 'Manager1234.';
+GRANT ALL PRIVILEGES ON lazy_lib. * TO 'lazy_manager'@'localhost';
+```

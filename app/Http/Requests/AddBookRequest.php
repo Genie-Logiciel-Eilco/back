@@ -20,6 +20,8 @@ class AddBookRequest extends FormRequest
             'subject'=>'required',
             'synopsis'=>'required',
             "authors"=>"required|array",
+            "categories"=>"required|array",
+            "categories.*"=>"int|distinct",
             "authors.*"=>"int|distinct",
             "publisher_id"=>"int"
         ];

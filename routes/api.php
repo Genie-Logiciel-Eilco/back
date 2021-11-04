@@ -49,6 +49,13 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::post("/publisher/add",[PublisherController::class,"add"]);
     Route::post("/publisher/update/{id}",[PublisherController::class,"update"]);
     Route::delete("/publisher/{id}",[PublisherController::class,"delete"]);
+    // Category Controller
+    Route::get("/category/{id}",[CategoryController::class,"getById"]);
+    Route::get("/categories",[CategoryController::class,"getAll"]);
+    Route::get("/categories/paginate/{rowsPerPage?}",[CategoryController::class,"paginate"]);
+    Route::post("/category/add",[CategoryController::class,"add"]);
+    Route::post("/category/update/{id}",[CategoryController::class,"update"]);
+    Route::delete("/category/{id}",[CategoryController::class,"delete"]);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

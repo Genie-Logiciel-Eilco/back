@@ -8,7 +8,6 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
-use App\Models\Role;
 use App\Notifications\APIPasswordResetNotification;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +16,7 @@ use IlluminateSupportFacadesHash;
 use IlluminateSupportFacadesPassword;
 use IlluminateHttpRequest;
 use IlluminateSupportFacadesValidator;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
@@ -24,14 +24,15 @@ class AuthController extends Controller
     {
         $fields = $request->validated();
         Role::findOrFail($fields['role_id']);
-        User::create([
+        $user=User::create([
             'first_name'=>$fields['first_name'],
             'last_name'=>$fields['last_name'],
             'username'=>$fields['username'],
             'email'=>$fields['email'],
-            'password'=>bcrypt($fields['password']),
-            'role_id'=>$fields['role_id']
-        ])->sendEmailVerificationNotification();
+            'password'=>bcrypt($fields['password'])
+        ]);
+        $user->assignRole("ROLE_USER");
+        $user->sendEmailVerificationNotification();
         return $this->sendResponse([],"Account created successfully");
     }
 
@@ -56,11 +57,11 @@ class AuthController extends Controller
             return $this->sendError('Bad credentials', 401);
         }
         $token = $user->createToken('myapptoken')->plainTextToken;
-        $role=Role::find($user->role_id);
-        unset($user->role_id);
+        $role=$user->roles[0];
+        unset($user->roles);
         $response = [
             'user' => $user,
-            'role'=>$role->role_name,
+            'role'=>$role->name,
             'token' => $token
         ];
         return $this->sendResponse($response, "");

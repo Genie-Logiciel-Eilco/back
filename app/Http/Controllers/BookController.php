@@ -6,12 +6,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddBookRequest;
 use App\Models\Author;
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Null_;
 
 class BookController extends Controller
 {
     public function uploadImage($uuid=null,Request $request)
     {
+        if (!$this->hasRole("ROLE_ADMIN")) {
+            return $this->permissionDenied();
+        }
         $file = $request->file("File");
         $allowed_extension = array('tif', 'jpeg', 'jpg','png');
         $extension=$file->getClientOriginalExtension();
@@ -50,6 +55,9 @@ class BookController extends Controller
     }
     public function uploadFile($uuid=null,Request $request)
     {
+        if (!$this->hasRole("ROLE_ADMIN")) {
+            return $this->permissionDenied();
+        }
         $file = $request->file("File");
         $allowed_extension = array('pdf', 'odt', 'docx','txt');
         $extension=$file->getClientOriginalExtension();
@@ -86,15 +94,19 @@ class BookController extends Controller
     }
     public function addBook($uuid,AddBookRequest $request)
     {
+        if (!$this->hasRole("ROLE_ADMIN")) {
+            return $this->permissionDenied();
+        }
         $fields=$request->validated();
         $authors=$fields['authors'];
+        $categories=$fields['categories'];
+        unset($fields['categories']);
         unset($fields['authors']);
         $book=Book::where('id',$uuid);
         if(Book::where('isbn',$fields['isbn'])->first() && $book->first()->isbn !=$fields['isbn'] )
         {
             return $this->sendError("Isbn already taken");
         }
-        
         $book->update($fields);
         $book->update(['isReady'=>1]);
         foreach($authors as $author)
@@ -104,8 +116,15 @@ class BookController extends Controller
                 return $this->sendError("Author with id {$author} doesn't exist");
             }
         }
+        foreach($categories as $category)
+        {
+            if(!Category::where('id',$category)->exists())
+            {
+                return $this->sendError("Category with id {$category} doesn't exist");
+            }
+        }
         $book->first()->authors()->sync($authors);
-        
+        $book->first()->categories()->sync($categories);       
         return $this->sendResponse(['id'=>$uuid],"Updated successfully");
     }
     public function show($uuid)
@@ -113,6 +132,20 @@ class BookController extends Controller
         $book=Book::where('id',$uuid)->first();
         if($book)
         {
+            $array=[];
+            $array2=[];
+            foreach($book['authors'] as $author)
+            {
+                array_push($array,$author->id);
+            }
+            foreach($book['categories'] as $category)
+            {
+                array_push($array2,$category->id);
+            }
+            unset($book->authors);
+            unset($book->categories);
+            $book['authors']=$array;
+            $book['categories']=$array2;
             return $this->sendResponse($book,"Success");
         }
         else
@@ -122,14 +155,59 @@ class BookController extends Controller
     }
     public function paginate($rowsPerPage=10)
     {
-        return $this->sendResponse(Book::where('isReady',1)->paginate($rowsPerPage),"Success");
+        $data=Book::where('isReady',1)->paginate($rowsPerPage);
+        foreach($data as $book)
+        {
+            if($book)
+            {
+            $array=[];
+            $array2=[];
+            foreach($book['authors'] as $author)
+            {
+                array_push($array,$author->id);
+            }
+            foreach($book['categories'] as $category)
+            {
+                array_push($array2,$category->id);
+            }
+            unset($book->authors);
+            unset($book->categories);
+            $book['authors']=$array;
+            $book['categories']=$array2;
+            }
+        }
+        return $this->sendResponse($data,"Success");
     }
     public function getAll()
     {
-        return $this->sendResponse(Book::where('isReady',1)->get(),"Success");
+        $books=Book::where('isReady',1)->get();
+        foreach($books as $book)
+        {
+            if($book)
+            {
+            $array=[];
+            $array2=[];
+            foreach($book['authors'] as $author)
+            {
+                array_push($array,$author->id);
+            }
+            foreach($book['categories'] as $category)
+            {
+                array_push($array2,$category->id);
+            }
+            unset($book->authors);
+            unset($book->categories);
+            $book['authors']=$array;
+            $book['categories']=$array2;
+            }
+        }
+        return $this->sendResponse($books,"Success");
     }
     public function delete($uuid)
     {
+        if (!$this->hasRole("ROLE_ADMIN")) {
+            return $this->permissionDenied();
+        }
         if(Book::where('id',$uuid)->delete())
         {
             return $this->sendResponse([],"Deleted successfully");

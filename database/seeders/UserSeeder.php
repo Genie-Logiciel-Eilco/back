@@ -23,7 +23,6 @@ class UserSeeder extends Seeder
             'email'=>"saaderraz99@gmail.com",
             'email_verified_at'=>"2021-10-19T12:33:36.000000Z",
             'password'=>bcrypt("SE300799"),
-            'role_id'=>1
         ]);
         $user2=User::create([
             'first_name'=>"Aymane",
@@ -32,8 +31,9 @@ class UserSeeder extends Seeder
             'email'=>"aymane.elmouhtarim@gmail.com",
             'email_verified_at'=>"2021-10-19T12:33:36.000000Z",
             'password'=>bcrypt("SE300799"),
-            'role_id'=>2
         ]);
+        $user->assignRole('ROLE_ADMIN');
+        $user2->assignRole('ROLE_ADMIN');
     }
         
 }

@@ -24,12 +24,18 @@ class AuthorController extends Controller
     }
     public function add(AddAuthorRequest $request)
     {
+        if (!$this->hasRole("ROLE_ADMIN")) {
+            return $this->permissionDenied();
+        }
         $fields=$request->validated();
         $author=Author::create($fields);
         return $this->sendResponse($author,"Author added Successfully");
     }
     public function update($id,UpdateAuthorRequest $request)
     {
+        if (!$this->hasRole("ROLE_ADMIN")) {
+            return $this->permissionDenied();
+        }
         $fields=$request->validated();
         $author=Author::find($id);
         if($author)
@@ -45,6 +51,9 @@ class AuthorController extends Controller
     }
     public function delete($id)
     {
+        if (!$this->hasRole("ROLE_ADMIN")) {
+            return $this->permissionDenied();
+        }
         $author=Author::find($id);
         if($author)
         {

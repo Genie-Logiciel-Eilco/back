@@ -12,9 +12,9 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function sendResponse($result, $message = "")
+    public function sendResponse($result, $message = "",$status=200)
     {
-        return Response::json($this->makeResponse($message, $result));
+        return Response::json($this->makeResponse($message, $result),$status,[],JSON_UNESCAPED_SLASHES);
     }
 
     public function sendError($error, $code = 404, $data = null)
@@ -45,6 +45,15 @@ class Controller extends BaseController
         // This uses spatie's roles and permissions package
         $user = $this->getAuthenticatedUser();
         if (!$user || !$user->hasPermissionTo($perm)) {
+            return false;
+        }
+        return $user;
+    }
+    public function hasRole($role)
+    {
+         // This uses spatie's roles and permissions package
+         $user = $this->getAuthenticatedUser();
+         if (!$user || !$user->hasRole($role)) {
             return false;
         }
         return $user;
