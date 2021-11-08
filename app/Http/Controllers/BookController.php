@@ -8,7 +8,7 @@ use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use phpDocumentor\Reflection\Types\Null_;
+use Illuminate\Support\Facades\Log;
 
 class BookController extends Controller
 {
@@ -18,8 +18,12 @@ class BookController extends Controller
             return $this->permissionDenied();
         }
         $file = $request->file("File");
+        Log::info(print_r($file,'true')); 
+        if ($file !== null) {
+            Log::info("Oh shit here we go again");
+        }
         $allowed_extension = array('tif', 'jpeg', 'jpg','png');
-        $extension=$file->getClientOriginalExtension();
+        $extension=$file->guessExtension();
         if (in_array($extension, $allowed_extension)) {
             if($file->getSize()<2000000)
             {
@@ -28,13 +32,13 @@ class BookController extends Controller
                     $book=Book::create();
                     Book::where("id",$book->id)->update(["imageLocation"=>$book->id.".".$extension]);
                     $file->move(public_path("images"),$book->id);
-                    return $this->sendResponse(["id"=>$book->id],"Image uploaded successfully");
+                    return $this->sendResponse(["id"=>$book->id,"extension"=>$extension],"Image uploaded successfully");
                 }
                 elseif(Book::where("id",$uuid)->first())
                 {
                     $file->move(public_path("images"),$uuid.".".$extension);
                     Book::where("id",$uuid)->update(["imageLocation"=>$uuid.".".$extension]);
-                    return $this->sendResponse(["id"=>$uuid],"Image uploaded successfully");
+                    return $this->sendResponse(["id"=>$uuid,"extension"=>$extension],"Image uploaded successfully");
                 }
                 else
                 {
