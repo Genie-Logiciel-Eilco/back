@@ -23,7 +23,6 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $fields = $request->validated();
-        Role::findOrFail($fields['role_id']);
         $user=User::create([
             'first_name'=>$fields['first_name'],
             'last_name'=>$fields['last_name'],
