@@ -19,7 +19,6 @@ class RegisterRequest extends FormRequest
             'username'=>'required|string|unique:users',
             'email'=>'required|string|email|unique:users',
             'password'=>'required|confirmed',//u have to send also password_confirmation
-            'role_id'=>'required|int',
         ];
     }
 
