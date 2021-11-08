@@ -18,12 +18,10 @@ class BookController extends Controller
             return $this->permissionDenied();
         }
         $file = $request->file("File");
-        Log::info(print_r($file,'true')); 
         if ($file !== null) {
-            Log::info("Oh shit here we go again");
+            $extension=$file->guessExtension();
         }
-        $allowed_extension = array('tif', 'jpeg', 'jpg','png');
-        $extension=$file->guessExtension();
+        $allowed_extension = array('tif', 'jpeg', 'jpg','png');  
         if (in_array($extension, $allowed_extension)) {
             if($file->getSize()<2000000)
             {
@@ -31,7 +29,7 @@ class BookController extends Controller
                 {
                     $book=Book::create();
                     Book::where("id",$book->id)->update(["imageLocation"=>$book->id.".".$extension]);
-                    $file->move(public_path("images"),$book->id);
+                    $file->move(public_path("images"),$book->id.".".$extension);
                     return $this->sendResponse(["id"=>$book->id,"extension"=>$extension],"Image uploaded successfully");
                 }
                 elseif(Book::where("id",$uuid)->first())
@@ -63,8 +61,14 @@ class BookController extends Controller
             return $this->permissionDenied();
         }
         $file = $request->file("File");
+        if ($file !== null) {
+            $extension=$file->guessExtension();
+        }
+        else
+        {
+            return $this->sendError("No file found");
+        }
         $allowed_extension = array('pdf', 'odt', 'docx','txt');
-        $extension=$file->getClientOriginalExtension();
         if (in_array($extension, $allowed_extension)) {
             if($file->getSize()<20000000)
             {
@@ -72,7 +76,7 @@ class BookController extends Controller
                 {
                     $book=Book::create();
                     Book::where("id",$book->id)->update(["fileLocation"=>$book->id.".".$extension]);
-                    $file->move(public_path("files"),$book->id);
+                    $file->move(public_path("files"),$book->id.".".$extension);
                     return $this->sendResponse(["id"=>$book->id],"File uploaded successfully");
                 }
                 elseif(Book::where("id",$uuid)->first())
@@ -100,6 +104,10 @@ class BookController extends Controller
     {
         if (!$this->hasRole("ROLE_ADMIN")) {
             return $this->permissionDenied();
+        }
+        else
+        {
+            return $this->sendError("No file found");
         }
         $fields=$request->validated();
         $authors=$fields['authors'];
