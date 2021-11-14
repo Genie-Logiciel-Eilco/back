@@ -105,10 +105,7 @@ class BookController extends Controller
         if (!$this->hasRole("ROLE_ADMIN")) {
             return $this->permissionDenied();
         }
-        else
-        {
-            return $this->sendError("No file found");
-        }
+
         $fields=$request->validated();
         $authors=$fields['authors'];
         $categories=$fields['categories'];

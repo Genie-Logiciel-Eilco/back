@@ -121,15 +121,18 @@ puttygen server1.ppk -O private-openssh -o server1.pem
 chmod 400 server1.pem 
 ssh -i server1.pem user@ip_address
 ```
-
+## Update and upgrade
+```
+sudo apt-get update && sudo apt-get upgrade
+```
 ## Add user to machine as sudoer
 ```
 adduser bobbhy
 usermod -aG sudo bobbhy
 ```
-## Copy ssh key from admin to the new user
+## Copy ssh key from admin to the new user (Stay connected as admin)
 ```
-sudo apt-get install rsync grsync
+sudo apt-get install rsync grsync 
 rsync --archive --chown=bobbhy:bobbhy ~/.ssh /home/bobbhy
 ```
 ## Install db 
