@@ -35,6 +35,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::get("/books/paginate/{rowsPerPage?}",[BookController::class,"paginate"]);
     Route::get("/books",[BookController::class,"getAll"]);
     Route::delete('/book/{uuid}',[BookController::class,"delete"]);
+    Route::post('/books/search/{rowsPerPage?}',[BookController::class,"search"]);
     // Author Controller
     Route::get("/author/{id}",[AuthorController::class,"getById"]);
     Route::get("/authors",[AuthorController::class,"getAll"]);

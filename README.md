@@ -133,7 +133,7 @@ usermod -aG sudo bobbhy
 ## Copy ssh key from admin to the new user (Stay connected as admin)
 ```
 sudo apt-get install rsync grsync 
-rsync --archive --chown=bobbhy:bobbhy ~/.ssh /home/bobbhy
+sudo rsync --archive --chown=bobbhy:bobbhy ~/.ssh /home/bobbhy
 ```
 ## Install db 
 ``` 

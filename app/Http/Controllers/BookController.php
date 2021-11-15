@@ -7,7 +7,13 @@ use App\Http\Requests\AddBookRequest;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Publisher;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BookController extends Controller
@@ -225,5 +231,194 @@ class BookController extends Controller
         {
             return $this->sendError("Book with uuid {$uuid} was not found");
         }
+    }
+    public function search($rowsPerPage=10,Request $request)
+    {
+        if(!$this->hasRole("ROLE_ADMIN"))
+        {
+            return $this->permissionDenied();
+        }
+        $query = Book::query();
+        $columns = ['isbn','name','subject','synopsis','publicationDate'];
+        if($request->except('_token')!=null)
+        {
+            foreach($request->except('_token') as $key=>$value)
+            {
+                if($key=="all")
+                {
+                    foreach($columns as $column){
+                        $query->orWhere(DB::raw('lower('.$column.')') , 'LIKE', '%' . strtolower($value) . '%');
+                    }
+                }
+                elseif($key=="author")
+                {
+                    $books=array();
+                    $authors=Author::where(DB::raw('lower(first_name)'),'LIKE','%'.strtolower($value).'%')
+                    ->orWhere(DB::raw('lower(last_name)'),'LIKE','%'.strtolower($value).'%')->get();
+                    
+                    foreach($authors as $author)
+                    {
+                        foreach($author->books()->get() as $book)
+                        {
+                            if($book->isReady)
+                            {
+                            array_push($books,$book);
+                            }
+                        }
+                    }
+                    foreach($books as $book)
+                    {
+
+                        $array=[];
+                        $array2=[];
+                        foreach($book['authors'] as $author)
+                        {
+                            array_push($array,$author->id);
+                        }
+                        foreach($book['categories'] as $category)
+                        {
+                            array_push($array2,$category->id);
+                        }
+                        unset($book->authors);
+                        unset($book->categories);
+                        $book['authors']=$array;
+                        $book['categories']=$array2;                                
+                    }
+                    if($request->paginate)
+                    {
+                    $data=$this->paginateArray($books,$rowsPerPage);
+                    }
+                    else
+                    {
+                        $data=array_slice($books, 0, 10);
+                    }
+                    return $this->sendResponse($data,"Success");
+                }
+                elseif($key=="publisher")
+                {
+                    $books=array();
+                    $publishers=Publisher::where(DB::raw('lower(name)'),'LIKE','%'.strtolower($value).'%')->get();
+                    foreach($publishers as $publisher)
+                    {
+                        foreach($publisher->books()->get() as $book)
+                        {
+                            if($book->isReady)
+                            {
+                            array_push($books,$book);
+                            }
+                        }
+                    }
+                    foreach($books as $book)
+                    {
+
+                        $array=[];
+                        $array2=[];
+                        foreach($book['authors'] as $author)
+                        {
+                            array_push($array,$author->id);
+                        }
+                        foreach($book['categories'] as $category)
+                        {
+                            array_push($array2,$category->id);
+                        }
+                        unset($book->authors);
+                        unset($book->categories);
+                        $book['authors']=$array;
+                        $book['categories']=$array2;                                
+                    }
+                    if($request->paginate)
+                    {
+                    $data=$this->paginateArray($books,$rowsPerPage);
+                    }
+                    else
+                    {
+                        $data=array_slice($books, 0, 10);
+                    }
+                    return $this->sendResponse($data,"Success");
+                }
+                elseif($key="category")
+                {
+                    $books=array();
+                    $categories=Category::where(DB::raw('lower(name)'),'LIKE','%'.strtolower($value).'%')->get();
+                    foreach($categories as $category)
+                    {
+                        foreach($category->books()->get() as $book)
+                        {
+                            array_push($books,$book);
+                        }
+                    }
+                    foreach($books as $book)
+                    {
+
+                        $array=[];
+                        $array2=[];
+                        foreach($book['authors'] as $author)
+                        {
+                            array_push($array,$author->id);
+                        }
+                        foreach($book['categories'] as $category)
+                        {
+                            array_push($array2,$category->id);
+                        }
+                        unset($book->authors);
+                        unset($book->categories);
+                        $book['authors']=$array;
+                        $book['categories']=$array2;                                
+                    }
+                    if($request->paginate)
+                    {
+                    $data=$this->paginateArray($books,$rowsPerPage);
+                    }
+                    else
+                    {
+                        $data=array_slice($books, 0, 10);
+                    }
+                    return $this->sendResponse($data,"Success");
+                }
+                elseif( in_array($key,$columns))
+                {
+                    $query->orWhere(DB::raw('lower('.$key.')'), 'LIKE', '%' . strtolower($value) . '%');
+                }
+                else
+                {
+                    return $this->sendError("Key not allowed");
+                }
+                if($request->paginate)
+                {
+                    $books=$query->where('isReady',1)->paginate();
+                }
+                else
+                {
+                    $books=$query->where('isReady',1)->take(10)->get();
+                }
+            
+                foreach($books as $book)
+                {
+                    $array=[];
+                    $array2=[];
+                    foreach($book['authors'] as $author)
+                    {
+                        array_push($array,$author->id);
+                    }
+                    foreach($book['categories'] as $category)
+                    {
+                        array_push($array2,$category->id);
+                    }
+                    unset($book->authors);
+                    unset($book->categories);
+                    $book['authors']=$array;
+                    $book['categories']=$array2;
+                }
+                
+                return $this->sendResponse($books,"Success 2");
+            }
+            
+        }
+    }
+    public function paginateArray($items, $perPage = 5, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator ::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator ($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 }
