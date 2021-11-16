@@ -266,6 +266,7 @@ class BookController extends Controller
                             }
                         }
                     }
+                    $books=$this->my_array_unique($books);
                     foreach($books as $book)
                     {
 
@@ -284,6 +285,7 @@ class BookController extends Controller
                         $book['authors']=$array;
                         $book['categories']=$array2;                                
                     }
+                    
                     if($request->paginate)
                     {
                     $data=$this->paginateArray($books,$rowsPerPage);
@@ -344,9 +346,11 @@ class BookController extends Controller
                     {
                         foreach($category->books()->get() as $book)
                         {
+                            unset($book->pivot);
                             array_push($books,$book);
                         }
                     }
+                    $books=$this->my_array_unique($books);
                     foreach($books as $book)
                     {
 
@@ -365,6 +369,7 @@ class BookController extends Controller
                         $book['authors']=$array;
                         $book['categories']=$array2;                                
                     }
+                    
                     if($request->paginate)
                     {
                     $data=$this->paginateArray($books,$rowsPerPage);
@@ -420,5 +425,24 @@ class BookController extends Controller
         $page = $page ?: (Paginator ::resolveCurrentPage() ?: 1);
         $items = $items instanceof Collection ? $items : Collection::make($items);
         return new LengthAwarePaginator ($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+    }
+    function my_array_unique($array){
+        $tmps = array();       
+    
+        foreach ($array as $object){
+            $flag=false;
+            foreach($tmps as $tmp)
+            {
+                if ($tmp->id==$object->id)
+                {
+                    $flag=true;
+                } 
+            }
+            if(!$flag)
+            {
+                array_push($tmps,$object);
+            }  
+        }
+        return $tmps;
     }
 }
