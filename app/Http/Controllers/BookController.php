@@ -66,7 +66,7 @@ class BookController extends Controller
         }
         $file = $request->file("File");
         if ($file !== null) {
-            $extension=$file->getExtension();
+            $extension=$file->getClientOriginalExtension();
         }
         else
         {
