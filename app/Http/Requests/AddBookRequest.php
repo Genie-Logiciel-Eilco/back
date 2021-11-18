@@ -17,7 +17,6 @@ class AddBookRequest extends FormRequest
         return [
             'isbn'=>'required',
             'name'=>'required',
-            'subject'=>'required',
             'synopsis'=>'required',
             "authors"=>"required|array",
             "categories"=>"required|array",

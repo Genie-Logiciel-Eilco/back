@@ -55,4 +55,34 @@ class PublisherController extends Controller
             return $this->sendError("Publisher with id {$id} was not found");
         }
     }
+    public function getBooksByPublisher($id)
+    {
+        $publisher=Publisher::find($id);
+        if(!$publisher)
+        {
+            return $this->sendError("Publisher with id {$id} was not found");
+        }
+        $books=$publisher->books()->get();
+        foreach($books as $book)
+        {
+
+            $array=[];
+            $array2=[];
+            foreach($book['authors'] as $author)
+            {
+                array_push($array,$author->id);
+            }
+            foreach($book['categories'] as $category)
+            {
+                array_push($array2,$category->id);
+            }
+            unset($book->authors);
+            unset($book->categories);
+            unset($book->pivot);
+            $book['authors']=$array;
+            $book['categories']=$array2;                                
+        }
+        return $this->sendResponse($books);
+
+    }
 }

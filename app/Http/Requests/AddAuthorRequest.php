@@ -19,7 +19,7 @@ class AddAuthorRequest extends FormRequest
             'biography'=>"required",
             'birthDate'=>"required|date",
             'deathDate'=>"date",
-            'birthplace'=>"required|string",
+            'birthplace'=>"required|string"
         ];
     }
 

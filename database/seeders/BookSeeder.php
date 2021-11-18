@@ -14,12 +14,10 @@ class BookSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
-        
-            Book::create([
+    {   
+        Book::create([
             'isbn'=>"B329832",
             'name'=>"buya",
-            'subject'=>"Comedie",
             'synopsis'=>"Bruh what the hell man",
             'fileLocation'=>"/buya/xd.txt",
             'imageLocation'=>"/buya/xd.jpg",

@@ -78,4 +78,37 @@ class CategoryController extends Controller
             return $this->sendError("Category with id {$id} was not found");
         }
     }
+    public function getBooksByCategory($id)
+    {
+        if (!$this->hasRole("ROLE_ADMIN")) {
+            return $this->permissionDenied();
+        }
+        $category=Category::where("id",$id)->first();
+        if(!$category)
+        {
+            return $this->sendError("Category with id {$id} was not found");
+        }
+        $books=$category->books()->get();
+        foreach($books as $book)
+        {
+
+            $array=[];
+            $array2=[];
+            foreach($book['authors'] as $author)
+            {
+                array_push($array,$author->id);
+            }
+            foreach($book['categories'] as $category)
+            {
+                array_push($array2,$category->id);
+            }
+            unset($book->authors);
+            unset($book->categories);
+            unset($book->pivot);
+            $book['authors']=$array;
+            $book['categories']=$array2;                                
+        }
+        return $this->sendResponse($books);
+
+    }
 }

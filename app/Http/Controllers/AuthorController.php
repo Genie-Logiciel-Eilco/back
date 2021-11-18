@@ -49,6 +49,46 @@ class AuthorController extends Controller
         }
         
     }
+    public function uploadImage($id,Request $request)
+    {
+        if (!$this->hasRole("ROLE_ADMIN")) {
+            return $this->permissionDenied();
+        }
+        $file = $request->file("File");
+        if ($file !== null) {
+            $extension=$file->guessExtension();
+        }
+        else
+        {
+            return $this->sendError("No File was found");
+        }
+        $allowed_extension = array('tif', 'jpeg', 'jpg','png');  
+        if (in_array($extension, $allowed_extension)) {
+            if($file->getSize()<2000000)
+            {
+               if(Author::where("id",$id)->first())
+                {
+                    $file->move(public_path("images/authors"),$id.".".$extension);
+                    Author::where("id",$id)->update(["imageLocation"=>$id.".".$extension]);
+                    return $this->sendResponse(["id"=>$id,"extension"=>$extension],"Image uploaded successfully");
+                }
+                else
+                {
+                    return $this->sendError("Uuid doesn't exist"); 
+                }
+                
+            }
+            else
+            {
+                return $this->sendError("Image too large");
+            }
+            
+        }
+        else
+        {
+            return $this->sendError("Extension not allowed");
+        }
+    }
     public function delete($id)
     {
         if (!$this->hasRole("ROLE_ADMIN")) {
@@ -64,5 +104,39 @@ class AuthorController extends Controller
         {
             return $this->sendError("Author with id {$id} was not found");
         }
+    }
+    public function getBooksByAuthor($id)
+    {
+        $author=Author::where('id',$id)->first();
+        if($author)
+        {
+            $books=$author->books()->get();
+            foreach($books as $book)
+            {
+
+                $array=[];
+                $array2=[];
+                foreach($book['authors'] as $author)
+                {
+                    array_push($array,$author->id);
+                }
+                foreach($book['categories'] as $category)
+                {
+                    array_push($array2,$category->id);
+                }
+                unset($book->authors);
+                unset($book->categories);
+                unset($book->pivot);
+                $book['authors']=$array;
+                $book['categories']=$array2;                                
+            }
+            return $this->sendResponse($books);
+
+        }
+        else
+        {
+            return $this->sendError("Author with id {$id} was not found");
+        }
+
     }
 }

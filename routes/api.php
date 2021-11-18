@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
@@ -36,13 +37,16 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::get("/books",[BookController::class,"getAll"]);
     Route::delete('/book/{uuid}',[BookController::class,"delete"]);
     Route::post('/books/search/{rowsPerPage?}',[BookController::class,"search"]);
+
     // Author Controller
     Route::get("/author/{id}",[AuthorController::class,"getById"]);
+    Route::post("/author/{id}/uploadImage",[AuthorController::class,"uploadImage"]);
     Route::get("/authors",[AuthorController::class,"getAll"]);
     Route::get("/authors/paginate/{rowsPerPage?}",[AuthorController::class,"paginate"]);
     Route::post("/author/add",[AuthorController::class,"add"]);
     Route::post("/author/update/{id}",[AuthorController::class,"update"]);
     Route::delete("/author/{id}",[AuthorController::class,"delete"]);
+    Route::get("/author/{id}/books",[AuthorController::class,"getBooksByAuthor"]);
     // Publisher Controller
     Route::get("/publisher/{id}",[PublisherController::class,"getById"]);
     Route::get("/publishers",[PublisherController::class,"getAll"]);
@@ -50,6 +54,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::post("/publisher/add",[PublisherController::class,"add"]);
     Route::post("/publisher/update/{id}",[PublisherController::class,"update"]);
     Route::delete("/publisher/{id}",[PublisherController::class,"delete"]);
+    Route::get("/publisher/{id}/books",[PublisherController::class,"getBooksByPublisher"]);
     // Category Controller
     Route::get("/category/{id}",[CategoryController::class,"getById"]);
     Route::get("/categories",[CategoryController::class,"getAll"]);
@@ -57,6 +62,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::post("/category/add",[CategoryController::class,"add"]);
     Route::post("/category/update/{id}",[CategoryController::class,"update"]);
     Route::delete("/category/{id}",[CategoryController::class,"delete"]);
+    Route::get("/category/{id}/books",[CategoryController::class,"getBooksByCategory"]);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
