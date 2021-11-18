@@ -23,7 +23,7 @@ class BookController extends Controller
         }
         $file = $request->file("File");
         if ($file !== null) {
-            $extension=$file->guessExtension();
+            $extension=$file->getClientOriginalExtension();
         }
         $allowed_extension = array('tif', 'jpeg', 'jpg','png');  
         if (in_array($extension, $allowed_extension)) {
