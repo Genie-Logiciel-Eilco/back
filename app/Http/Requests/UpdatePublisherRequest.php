@@ -16,7 +16,7 @@ class UpdatePublisherRequest extends FormRequest
         return [
             'name'=>'string',
             'description'=>'',
-            'foundationDate'=>'date'
+            'foundationDate'=>''
         ];
     }
 

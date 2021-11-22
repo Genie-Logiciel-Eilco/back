@@ -17,8 +17,8 @@ class UpdateAuthorRequest extends FormRequest
             'first_name'=>'string',
             'last_name'=>'string',
             'biography'=>"text",
-            'birthDate'=>"date",
-            'deathDate'=>"date",
+            'birthDate'=>"",
+            'deathDate'=>"",
             'birthplace'=>"string",
         ];
     }
