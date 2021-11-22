@@ -23,6 +23,7 @@ class AddBookRequest extends FormRequest
             "categories.*"=>"int|distinct",
             "authors.*"=>"int|distinct",
             "publisher_id"=>"int"
+
         ];
     }
 

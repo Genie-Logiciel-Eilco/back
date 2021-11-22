@@ -103,6 +103,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-la
 ...see tutorial
 ### File too large : Look for this link and search for ngix:
 ```https://stackoverflow.com/questions/28529518/small-file-get-uploaded-but-not-large-file-in-laravel/28581314```
+```Don't forget to create your .ini in nginx folder```
 ### Unable to write in the Directory
 ```
  useradd -U -G www-data -m -c "deploy" deploybot

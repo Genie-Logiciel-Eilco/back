@@ -17,8 +17,8 @@ class AddAuthorRequest extends FormRequest
             'first_name'=>'required|string',
             'last_name'=>'required|string',
             'biography'=>"required",
-            'birthDate'=>"required|date",
-            'deathDate'=>"date",
+            'birthDate'=>"required",
+            'deathDate'=>"",
             'birthplace'=>"required|string"
         ];
     }
