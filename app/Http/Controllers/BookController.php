@@ -72,7 +72,7 @@ class BookController extends Controller
         {
             return $this->sendError("No file found");
         }
-        $allowed_extension = array('pdf', 'odt', 'docx','txt');
+        $allowed_extension = array('epub');
         if (in_array($extension, $allowed_extension)) {
             if($file->getSize()<20000000)
             {
