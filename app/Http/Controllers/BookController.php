@@ -112,6 +112,7 @@ class BookController extends Controller
 
         $fields=$request->validated();
         $authors=$fields['authors'];
+        $fields['publicationDate']=date('Y-m-d ', strtotime($fields['publicationDate']));
         $categories=$fields['categories'];
         unset($fields['categories']);
         unset($fields['authors']);

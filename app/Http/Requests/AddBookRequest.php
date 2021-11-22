@@ -22,7 +22,8 @@ class AddBookRequest extends FormRequest
             "categories"=>"required|array",
             "categories.*"=>"int|distinct",
             "authors.*"=>"int|distinct",
-            "publisher_id"=>"int"
+            "publisher_id"=>"int",
+            "publicationDate"=>""
         ];
     }
 
