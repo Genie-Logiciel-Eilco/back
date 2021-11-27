@@ -23,8 +23,9 @@ class PublisherController extends Controller
         return $this->sendResponse(Publisher::paginate($rowsPerPage),"Success");
     }
     public function add(AddPublisherRequest $request)
-    {
+    {   
         $fields=$request->validated();
+        $fields['foundationDate']=date('Y-m-d ', strtotime($fields['foundationDate']));
         $publisher=Publisher::create($fields);
         return $this->sendResponse($publisher,"Publisher added Successfully");
     }
@@ -34,8 +35,12 @@ class PublisherController extends Controller
         $publisher=Publisher::find($id);
         if($publisher)
         {
-        $publisher->update($fields);
-        return $this->sendResponse($publisher,"Publisher updated Successfully");
+            if(isset($fields['foundationDate']))
+            {
+                $fields['foundationDate']=date('Y-m-d ', strtotime($fields['foundationDate']));
+            }
+            $publisher->update($fields);
+            return $this->sendResponse($publisher,"Publisher updated Successfully");
         }
         else
         {

@@ -16,7 +16,7 @@ class UpdateAuthorRequest extends FormRequest
         return [
             'first_name'=>'string',
             'last_name'=>'string',
-            'biography'=>"text",
+            'biography'=>"",
             'birthDate'=>"",
             'deathDate'=>"",
             'birthplace'=>"string",

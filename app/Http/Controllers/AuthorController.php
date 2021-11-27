@@ -28,6 +28,11 @@ class AuthorController extends Controller
             return $this->permissionDenied();
         }
         $fields=$request->validated();
+        $fields["birthDate"]=date('Y-m-d ', strtotime($fields['birthDate']));
+        if(isset($fields["deathDate"]))
+        {
+            $fields["deathDate"]=date('Y-m-d ', strtotime($fields['deathDate']));
+        }
         $author=Author::create($fields);
         return $this->sendResponse($author,"Author added Successfully");
     }
@@ -40,6 +45,14 @@ class AuthorController extends Controller
         $author=Author::find($id);
         if($author)
         {
+            if($fields["birthDate"])
+            {
+            $fields["birthDate"]=date('Y-m-d ', strtotime($fields['birthDate']));
+            }
+            if(isset($fields["deathDate"]))
+            {
+            $fields["deathDate"]=date('Y-m-d ', strtotime($fields['deathDate']));
+            }
             $author->update($fields);
             return $this->sendResponse($author,"Author updated Successfully");
         }

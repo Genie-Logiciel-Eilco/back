@@ -138,9 +138,25 @@ sudo rsync --archive --chown=bobbhy:bobbhy ~/.ssh /home/bobbhy
 ```
 ## Install db 
 ``` 
+sudo apt-get update && sudo apt-get upgrade
 sudo apt-get install default-mysql-server
 sudo mysql_secure_installation
 CREATE DATABASE lazy_lib;
 CREATE USER 'lazy_manager'@'localhost' IDENTIFIED BY 'Manager1234.';
 GRANT ALL PRIVILEGES ON lazy_lib. * TO 'lazy_manager'@'localhost';
+```
+## Deploy backend
+```
+sudo apt-get update && sudo apt-get upgrade
+sudo apt -y install software-properties-common 
+sudo apt-get install nginx
+sudo systemctl status nginx
+sudo apt -y install lsb-release apt-transport-https ca-certificates 
+sudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+
+sudo apt-get update
+sudo apt -y install php7.4
+sudo apt-get install -y php7.4-cli php7.4-json php7.4-common php7.4-mysql php7.4-zip php7.4-gd php7.4-mbstring php7.4-curl php7.4-xml php7.4-bcmath php7.4-fpm php7.4-bcmath
+sudo apt-get update
+curl -sS https://getcomposer.org/installer -o composer-setup.php
 ```

@@ -16,7 +16,7 @@ class AddPublisherRequest extends FormRequest
         return [
             'name'=>'required|string',
             'description'=>'required',
-            'foundationDate'=>"",
+            'foundationDate'=>"required",
         ];
     }
 
