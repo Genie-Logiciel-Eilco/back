@@ -20,7 +20,7 @@ class CreateBooksTable extends Migration
             $table->string("subject")->nullable();
             $table->text('synopsis')->nullable();
             $table->string('fileLocation')->nullable();
-            $table->string('imageLocation');
+            $table->string('imageLocation')->nullable();
             $table->date('publicationDate')->nullable();
             $table->integer('counter')->default(0);
             $table->boolean('isReady')->default(0);

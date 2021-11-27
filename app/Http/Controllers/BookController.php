@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -33,12 +34,15 @@ class BookController extends Controller
                 {
                     $book=Book::create();
                     Book::where("id",$book->id)->update(["imageLocation"=>$book->id.".".$extension]);
-                    $file->move(public_path("images"),$book->id.".".$extension);
+                    //$file->move(public_path("images"),$book->id.".".$extension);
+                    Storage::disk('ftp')->put('images/'.$book->id.".".$extension, fopen($request->file('File'), 'r+'));
+
                     return $this->sendResponse(["id"=>$book->id,"extension"=>$extension],"Image uploaded successfully");
                 }
                 elseif(Book::where("id",$uuid)->first())
                 {
-                    $file->move(public_path("images"),$uuid.".".$extension);
+                    //$file->move(public_path("images"),$uuid.".".$extension);
+                    Storage::disk('ftp')->put('images/'.$uuid.".".$extension, fopen($request->file('File'), 'r+'));               
                     Book::where("id",$uuid)->update(["imageLocation"=>$uuid.".".$extension]);
                     return $this->sendResponse(["id"=>$uuid,"extension"=>$extension],"Image uploaded successfully");
                 }
@@ -80,12 +84,19 @@ class BookController extends Controller
                 {
                     $book=Book::create();
                     Book::where("id",$book->id)->update(["fileLocation"=>$book->id.".".$extension]);
-                    $file->move(public_path("files"),$book->id.".".$extension);
+                    //$file->move(public_path("files"),$book->id.".".$extension);
+                    Storage::disk('ftp')->put('books/'.$book->id.'/'.$book->id.".".$extension, fopen($request->file('File'), 'r+'));;
                     return $this->sendResponse(["id"=>$book->id],"File uploaded successfully");
                 }
                 elseif(Book::where("id",$uuid)->first())
                 {
-                    $file->move(public_path("files"),$uuid.".".$extension);
+                    //$file->move(public_path("files"),$uuid.".".$extension);
+                    Storage::disk('ftp')->put('books/'.$uuid.'/'.$uuid.".".$extension, fopen($request->file('File'), 'r+'));
+					if(Storage::disk('ftp')->exists('books/'.$uuid.'/'.$uuid.".mp3")) {
+					
+						Storage::disk('ftp')->delete('books/'.$uuid.'/'.$uuid.".mp3");
+							                    	
+					}
                     Book::where("id",$uuid)->update(["fileLocation"=>$uuid.".".$extension]);
                     return $this->sendResponse(["id"=>$uuid],"File uploaded successfully");
                 }
