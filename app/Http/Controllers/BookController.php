@@ -97,7 +97,7 @@ class BookController extends Controller
                 elseif(Book::where("id",$uuid)->first())
                 {
                     //$file->move(public_path("files"),$uuid.".".$extension);
-                    if (Storage::disk('ftp')->exists('books/'.$uuid."/".$uuid.".mp3") {
+                    if (Storage::disk('ftp')->exists('books/'.$uuid."/".$uuid.".mp3")) {
 							Storage::disk('ftp')->delete('books/'.$uuid."/".$uuid.".mp3");
                     	
                     }
