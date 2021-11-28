@@ -63,6 +63,10 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::post("/category/update/{id}",[CategoryController::class,"update"]);
     Route::delete("/category/{id}",[CategoryController::class,"delete"]);
     Route::get("/category/{id}/books",[CategoryController::class,"getBooksByCategory"]);
+    // User Controller
+    Route::get("/user/favorites",[UserController::class,"getFav" ]);
+    Route::post("/user/favorites/detachBook/{uuid}",[UserController::class,"removeBookFromFav"]);
+    Route::post("/user/favorites/attachBook/{uuid}",[UserController::class,"addBookToFav"]);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
