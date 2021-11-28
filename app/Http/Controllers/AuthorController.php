@@ -6,6 +6,7 @@ use App\Http\Requests\AddAuthorRequest;
 use App\Http\Requests\UpdateAuthorRequest;
 use App\Models\Author;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AuthorController extends Controller
 {
@@ -82,6 +83,7 @@ class AuthorController extends Controller
                if(Author::where("id",$id)->first())
                 {
                     $file->move(public_path("images/authors"),$id.".".$extension);
+                    // Storage::disk('ftp')->put('books/'.$id.".".$extension, fopen($request->file('File'), 'r+'));;
                     Author::where("id",$id)->update(["imageLocation"=>$id.".".$extension]);
                     return $this->sendResponse(["id"=>$id,"extension"=>$extension],"Image uploaded successfully");
                 }
