@@ -162,17 +162,15 @@ class BookController extends Controller
             $array=[];
             $array2=[];
             $array3=[];
-            $array3=[];
             foreach($book['authors'] as $author)
             {
-               
-                
+                $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
                 array_push($array,$array3);
                 
             }
             foreach($book['categories'] as $category)
             {
-                array_push($array2,$category->id);
+                array_push($array2,$category);
             }
             unset($book->authors);
             unset($book->categories);
@@ -197,13 +195,12 @@ class BookController extends Controller
             $array3=[];
             foreach($book['authors'] as $author)
             {
-                 $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
-                
+                $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
                 array_push($array,$array3);
             }
             foreach($book['categories'] as $category)
             {
-                array_push($array2,$category->id);
+                array_push($array2,$category);
             }
             unset($book->authors);
             unset($book->categories);
@@ -225,13 +222,12 @@ class BookController extends Controller
             $array3=[];
             foreach($book['authors'] as $author)
             {
-                 $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
-                
+                $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
                 array_push($array,$array3);
             }
             foreach($book['categories'] as $category)
             {
-                array_push($array2,$category->id);
+                array_push($array2,$category);
             }
             unset($book->authors);
             unset($book->categories);
@@ -299,20 +295,18 @@ class BookController extends Controller
                         $array3=[];
                         foreach($book['authors'] as $author)
                         {
-                             $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
-                
+                            $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
                             array_push($array,$array3);
                         }
                         foreach($book['categories'] as $category)
                         {
-                            array_push($array2,$category->id);
+                            array_push($array2,$category);
                         }
                         unset($book->authors);
                         unset($book->categories);
                         $book['authors']=$array;
                         $book['categories']=$array2;
                     }
-
                     if($request->paginate)
                     {
                     $data=$this->paginateArray($books,$rowsPerPage);
@@ -345,8 +339,7 @@ class BookController extends Controller
                         $array3=[];
                         foreach($book['authors'] as $author)
                         {
-                             $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
-                
+                            $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
                             array_push($array,$array3);
                         }
                         foreach($book['categories'] as $category)
@@ -389,13 +382,12 @@ class BookController extends Controller
                         $array3=[];
                         foreach($book['authors'] as $author)
                         {
-                             $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
-                
+                            $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
                             array_push($array,$array3);
                         }
                         foreach($book['categories'] as $category)
                         {
-                            array_push($array2,$category->id);
+                            array_push($array2,$category);
                         }
                         unset($book->authors);
                         unset($book->categories);
@@ -437,13 +429,12 @@ class BookController extends Controller
                     $array3=[];
                     foreach($book['authors'] as $author)
                     {
-                         $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
-                
+                        $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
                         array_push($array,$array3);
                     }
                     foreach($book['categories'] as $category)
                     {
-                        array_push($array2,$category->id);
+                        array_push($array2,$category);
                     }
                     unset($book->authors);
                     unset($book->categories);
