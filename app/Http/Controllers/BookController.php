@@ -26,7 +26,8 @@ class BookController extends Controller
         if ($file !== null) {
             $extension=$file->getClientOriginalExtension();
         }
-        $allowed_extension = array('tif', 'jpeg', 'jpg','png');  
+        $allowed_extension = array('tif', 'jpeg', 'jpg','png');
+
         if (in_array($extension, $allowed_extension)) {
             if($file->getSize()<2000000)
             {
@@ -34,29 +35,30 @@ class BookController extends Controller
                 {
                     $book=Book::create();
                     Book::where("id",$book->id)->update(["imageLocation"=>$book->id.".".$extension]);
-                    //$file->move(public_path("images"),$book->id.".".$extension);
-                    Storage::disk('ftp')->put('images/'.$book->id.".".$extension, fopen($request->file('File'), 'r+'));
-
+                   // $file->move(public_path("images"),$book->id.".".$extension);
+                   Storage::disk('ftp')->put('books/'.$book->id."/".$book->id.".".$extension, fopen($request->file('File'), 'r+'));
+                   
                     return $this->sendResponse(["id"=>$book->id,"extension"=>$extension],"Image uploaded successfully");
                 }
                 elseif(Book::where("id",$uuid)->first())
                 {
                     //$file->move(public_path("images"),$uuid.".".$extension);
-                    Storage::disk('ftp')->put('images/'.$uuid.".".$extension, fopen($request->file('File'), 'r+'));               
+                    Storage::disk('ftp')->put('books/'.$uuid."/".$uuid.".".$extension, fopen($request->file('File'), 'r+'));
+
                     Book::where("id",$uuid)->update(["imageLocation"=>$uuid.".".$extension]);
                     return $this->sendResponse(["id"=>$uuid,"extension"=>$extension],"Image uploaded successfully");
                 }
                 else
                 {
-                    return $this->sendError("Uuid doesn't exist"); 
+                    return $this->sendError("Uuid doesn't exist");
                 }
-                
+
             }
             else
             {
                 return $this->sendError("Image too large");
             }
-            
+
         }
         else
         {
@@ -85,24 +87,28 @@ class BookController extends Controller
                     $book=Book::create();
                     Book::where("id",$book->id)->update(["fileLocation"=>$book->id.".".$extension]);
                     //$file->move(public_path("files"),$book->id.".".$extension);
-                    Storage::disk('ftp')->put('books/'.$book->id.'/'.$book->id.".".$extension, fopen($request->file('File'), 'r+'));;
+                    
+                    Storage::disk('ftp')->put('books/'.$book->id."/".$book->id.".".$extension, fopen($request->file('File'), 'r+'));
+
                     return $this->sendResponse(["id"=>$book->id],"File uploaded successfully");
                 }
+
+
                 elseif(Book::where("id",$uuid)->first())
                 {
                     //$file->move(public_path("files"),$uuid.".".$extension);
-                    Storage::disk('ftp')->put('books/'.$uuid.'/'.$uuid.".".$extension, fopen($request->file('File'), 'r+'));
-					if(Storage::disk('ftp')->exists('books/'.$uuid.'/'.$uuid.".mp3")) {
-					
-						Storage::disk('ftp')->delete('books/'.$uuid.'/'.$uuid.".mp3");
-							                    	
-					}
+                    if (Storage::disk('ftp')->exists('books/'.$uuid."/".$uuid.".mp3") {
+							Storage::disk('ftp')->delete('books/'.$uuid."/".$uuid.".mp3");
+                    	
+                    }
+                    Storage::disk('ftp')->put('books/'.$uuid."/".$uuid.".".$extension, fopen($request->file('File'), 'r+'));
+
                     Book::where("id",$uuid)->update(["fileLocation"=>$uuid.".".$extension]);
                     return $this->sendResponse(["id"=>$uuid],"File uploaded successfully");
                 }
                 else
                 {
-                    return $this->sendError("Uuid doesn't exist"); 
+                    return $this->sendError("Uuid doesn't exist");
                 }
             }
             else
@@ -123,7 +129,6 @@ class BookController extends Controller
 
         $fields=$request->validated();
         $authors=$fields['authors'];
-        $fields['publicationDate']=date('Y-m-d ', strtotime($fields['publicationDate']));
         $categories=$fields['categories'];
         unset($fields['categories']);
         unset($fields['authors']);
@@ -149,7 +154,7 @@ class BookController extends Controller
             }
         }
         $book->first()->authors()->sync($authors);
-        $book->first()->categories()->sync($categories);       
+        $book->first()->categories()->sync($categories);
         return $this->sendResponse(['id'=>$uuid],"Updated successfully");
     }
     public function show($uuid)
@@ -159,9 +164,14 @@ class BookController extends Controller
         {
             $array=[];
             $array2=[];
+            $array3=[];
+            $array3=[];
             foreach($book['authors'] as $author)
             {
-                array_push($array,$author->id);
+               
+                
+                array_push($array,$array3);
+                
             }
             foreach($book['categories'] as $category)
             {
@@ -175,7 +185,7 @@ class BookController extends Controller
         }
         else
         {
-            return $this->sendError("Book with uuitd {$uuid} was not found");
+            return $this->sendError("Book with uuid {$uuid} was not found");
         }
     }
     public function paginate($rowsPerPage=10)
@@ -187,9 +197,12 @@ class BookController extends Controller
             {
             $array=[];
             $array2=[];
+            $array3=[];
             foreach($book['authors'] as $author)
             {
-                array_push($array,$author->id);
+                 $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
+                
+                array_push($array,$array3);
             }
             foreach($book['categories'] as $category)
             {
@@ -212,9 +225,12 @@ class BookController extends Controller
             {
             $array=[];
             $array2=[];
+            $array3=[];
             foreach($book['authors'] as $author)
             {
-                array_push($array,$author->id);
+                 $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
+                
+                array_push($array,$array3);
             }
             foreach($book['categories'] as $category)
             {
@@ -265,7 +281,7 @@ class BookController extends Controller
                     $books=array();
                     $authors=Author::where(DB::raw('lower(first_name)'),'LIKE','%'.strtolower($value).'%')
                     ->orWhere(DB::raw('lower(last_name)'),'LIKE','%'.strtolower($value).'%')->get();
-                    
+
                     foreach($authors as $author)
                     {
                         foreach($author->books()->get() as $book)
@@ -283,9 +299,12 @@ class BookController extends Controller
 
                         $array=[];
                         $array2=[];
+                        $array3=[];
                         foreach($book['authors'] as $author)
                         {
-                            array_push($array,$author->id);
+                             $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
+                
+                            array_push($array,$array3);
                         }
                         foreach($book['categories'] as $category)
                         {
@@ -294,9 +313,9 @@ class BookController extends Controller
                         unset($book->authors);
                         unset($book->categories);
                         $book['authors']=$array;
-                        $book['categories']=$array2;                                
+                        $book['categories']=$array2;
                     }
-                    
+
                     if($request->paginate)
                     {
                     $data=$this->paginateArray($books,$rowsPerPage);
@@ -326,9 +345,12 @@ class BookController extends Controller
 
                         $array=[];
                         $array2=[];
+                        $array3=[];
                         foreach($book['authors'] as $author)
                         {
-                            array_push($array,$author->id);
+                             $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
+                
+                            array_push($array,$array3);
                         }
                         foreach($book['categories'] as $category)
                         {
@@ -337,7 +359,7 @@ class BookController extends Controller
                         unset($book->authors);
                         unset($book->categories);
                         $book['authors']=$array;
-                        $book['categories']=$array2;                                
+                        $book['categories']=$array2;
                     }
                     if($request->paginate)
                     {
@@ -367,9 +389,12 @@ class BookController extends Controller
 
                         $array=[];
                         $array2=[];
+                        $array3=[];
                         foreach($book['authors'] as $author)
                         {
-                            array_push($array,$author->id);
+                             $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
+                
+                            array_push($array,$array3);
                         }
                         foreach($book['categories'] as $category)
                         {
@@ -378,9 +403,9 @@ class BookController extends Controller
                         unset($book->authors);
                         unset($book->categories);
                         $book['authors']=$array;
-                        $book['categories']=$array2;                                
+                        $book['categories']=$array2;
                     }
-                    
+
                     if($request->paginate)
                     {
                     $data=$this->paginateArray($books,$rowsPerPage);
@@ -407,14 +432,17 @@ class BookController extends Controller
                 {
                     $books=$query->where('isReady',1)->take(10)->get();
                 }
-            
+
                 foreach($books as $book)
                 {
                     $array=[];
                     $array2=[];
+                    $array3=[];
                     foreach($book['authors'] as $author)
                     {
-                        array_push($array,$author->id);
+                         $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
+                
+                        array_push($array,$array3);
                     }
                     foreach($book['categories'] as $category)
                     {
@@ -425,10 +453,10 @@ class BookController extends Controller
                     $book['authors']=$array;
                     $book['categories']=$array2;
                 }
-                
+
                 return $this->sendResponse($books,"Success 2");
             }
-            
+
         }
     }
     public function paginateArray($items, $perPage = 5, $page = null, $options = [])
@@ -438,8 +466,8 @@ class BookController extends Controller
         return new LengthAwarePaginator ($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
     function my_array_unique($array){
-        $tmps = array();       
-    
+        $tmps = array();
+
         foreach ($array as $object){
             $flag=false;
             foreach($tmps as $tmp)
@@ -447,12 +475,12 @@ class BookController extends Controller
                 if ($tmp->id==$object->id)
                 {
                     $flag=true;
-                } 
+                }
             }
             if(!$flag)
             {
                 array_push($tmps,$object);
-            }  
+            }
         }
         return $tmps;
     }
