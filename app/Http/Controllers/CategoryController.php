@@ -94,13 +94,15 @@ class CategoryController extends Controller
 
             $array=[];
             $array2=[];
+            $array3=[];
             foreach($book['authors'] as $author)
             {
-                array_push($array,$author->id);
+                $array3= ['id' => $author->id, 'first_name' => $author->first_name,'last_name' => $author->last_name];
+                array_push($array,$array3);
             }
             foreach($book['categories'] as $category)
             {
-                array_push($array2,$category->id);
+                array_push($array2,$category);
             }
             unset($book->authors);
             unset($book->categories);
